@@ -1,0 +1,151 @@
+service:
+  name: gateway
+  path: gateway
+  address: io.ultima.gateway
+  port: 9090
+  host: localhost:9090
+  tls: false
+  sharedData:
+    enabled: true
+
+
+observability:
+  enabled: true
+  port: 9092
+  metrics:
+    enabled: true
+    path: /metrics
+  k8s:
+    enabled: true
+    probes:
+      liveness: /health/live
+      readiness: /health/ready
+
+
+api:
+  specifications:
+    ultima:
+      name: Ultima API
+      path: webroot/api/specs/api-spec.yaml
+
+storage:
+  db:
+    host: ultima-voting-database
+    port: 5432
+    name: ultima_nas_voting
+    user: ultima_nas_db_user
+    password: UMxu%H=&'VE)G9_n:*h2^{TeX6dQ9
+    url: jdbc:postgresql://ultima-voting-database:5432/ultima_nas_voting
+    useTls: false
+    certPath: /tmp/dummy-cert.pem
+    maxPool: 5
+    migration:
+      enabled: true
+      changelogPath: migrations/changelog/db.changelog.xml
+
+features:
+  verticles:
+    service:
+      address: service.details
+      messageTypes:
+        - name: gatewayVersion
+          broadcastable: false
+        - name: gatewayHealthLive
+          broadcastable: false
+        - name: gatewayHealthReady
+          broadcastable: false
+    storage:
+      address: storage.assets
+      messageTypes:
+        - name: defaultStorage
+          broadcastable: false
+        - name: disk
+      config:
+        files:
+          uploadPath: /tmp/uploads
+          enabledStrategy: disk
+          seedAssetsPath: /app/resources/assets
+          strategies:
+            - name: disk
+              basePath: /tmp/ultima/nas
+              apiPath: /assets
+    judge:
+      address: judges
+      identifier: id
+      messageTypes:
+        - name: retrieveJudge
+        - name: retrieveJudges
+        - name: createJudge
+        - name: updateJudge
+        - name: archiveJudge
+        - name: retrieveJudgeByStageName
+        - name: uploadJudgeProfileImage
+        - name: updateJudgeProfileImage
+        - name: seedJudges
+      config:
+        gender: Male
+        maxSeedCount: 4
+
+    contestant:
+      address: contestants
+      identifier: id
+      messageTypes:
+        - name: retrieveContestant
+        - name: retrieveContestants
+        - name: createContestant
+        - name: updateContestant
+        - name: archiveContestant
+        - name: uploadContestantProfileImage
+        - name: updateContestantProfileImage
+        - name: seedContestants
+      config:
+        gender: Male
+        maxSeedCount: 350
+
+    votingRound:
+      address: votingRounds
+      identifier: id
+      messageTypes:
+        - name: retrieveVotingRound
+        - name: retrieveVotingRounds
+        - name: createVotingRound
+        - name: updateVotingRound
+        - name: archiveVotingRound
+        - name: addJudgeToVotingRound
+        - name: removeJudgeToVotingRound
+        - name: seedVotingRounds
+
+    votable:
+      address: votables
+      identifier: id
+      messageTypes:
+        - name: retrieveVotables
+        - name: createVotable
+        - name: retrieveVotable
+        - name: updateVotable
+        - name: archiveVotable
+        - name: retrieveVotingRoundVotable
+        - name: retrieveActiveVotable
+        - name: activateVotable
+        - name: reactivateVotable
+        - name: completeVotable
+        - name: addContestantToVotable
+        - name: removeContestantToVotable
+        - name: activeVotableVotingRound
+      config:
+        completionDelay: 750 # The completionDelay duration in milliseconds
+        duration: 40 # The default duration in seconds
+        votingDelay: 30 # The votingDelay duration in seconds
+        pickMeDuration: 25 # The default pickMe duration in seconds
+        pickMeVotingDelay: 10 # The default pickMe votingDelay duration in seconds
+
+    result:
+      address: result
+      identifier: id
+      messageTypes:
+        - name: retrieveResults
+        - name: retrieveResult
+        - name: retrieveActiveVotableResults
+        - name: submitActiveVotableResults
+        - name: revealResult
+

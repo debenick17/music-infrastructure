@@ -1,0 +1,85 @@
+version: "3.8"
+
+volumes:
+  postgres-data:
+    driver: local
+
+networks:
+  platform_network:
+
+services:
+
+  ultima-voting-database:
+    container_name: ultima-voting-database
+    image: postgres:13.6-alpine
+    expose:
+      - 5432
+    ports:
+      - "54322:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ultima_nas_db_user
+      POSTGRES_PASSWORD: UMxu%H=&'VE)G9_n:*h2^{TeX6dQ9
+      POSTGRES_DB: ultima_nas_voting
+      POSTGRES_URL: jdbc:postgresql://ultima-voting-database:5432/ultima_nas_voting
+    restart: always
+    networks:
+      platform_network:
+
+
+  ultima-voting-backend:
+    container_name: ultima-voting-backend
+    image: luminara/ultima-gateway
+    volumes:
+      - ./configs:/app/configs
+    expose:
+      - 9090
+      - 9091
+    ports:
+      - "9090:9090"
+      - "9091:9091"
+    networks:
+      platform_network:
+    depends_on:
+      - ultima-voting-database
+
+  ultima-proxy-backoffice:
+    container_name: ultima-proxy-backoffice
+    image: nginx:1.25
+    ports:
+      - "8000:80"
+    volumes:
+      - ./proxy/ultima-backoffice:/etc/nginx/conf.d
+    networks:
+      platform_network:
+    depends_on:
+      - ultima-voting-backoffice
+
+  ultima-voting-backoffice:
+    container_name: ultima-voting-backoffice
+    image: luminara/ultima-backoffice
+    networks:
+      platform_network:
+    depends_on:
+      - ultima-voting-backend
+
+  ultima-proxy-judge:
+    container_name: ultima-proxy-judge
+    image: nginx:1.25
+    ports:
+      - "8001:80"
+    volumes:
+      - ./proxy/ultima-judge:/etc/nginx/conf.d
+    networks:
+      platform_network:
+    depends_on:
+      - ultima-voting-judge
+
+  ultima-voting-judge:
+    container_name: ultima-voting-judge
+    image: luminara/ultima-judge
+    networks:
+      platform_network:
+    depends_on:
+      - ultima-voting-backend
