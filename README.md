@@ -22,9 +22,9 @@ The Ultima platform assumes the server it is to run on has some packages(softwar
 
 Your system is now ready to run the Ultima Platform. The steps for doing that are listed below;
 
-1. Navigate to [this Google Drive link](https://drive.google.com/drive/u/1/folders/14AicUIfCUx8dgb9l8d65e6_aryHEPvIi) and download the `Ultima` zip file.
-2. Once you unzip the file you, you should see a main folder named `Ultima` with 4 sub-folders (ultima-infrastructure, ultima-backend, ultima-backoffice, ultima-judge-frontend).
-3. Right-click on the sub-folder named `ultima-infrastructure`, among the displayed options select "_Open in terminal_".
+1. Navigate to [this Google Drive link](https://drive.google.com/file/d/19KjapXjxTzRwQ5QyeRpmfOrG40F2kGzL/view?usp=sharing) and download the `Ultima` zip file.
+2. Once you unzip the file you, you should see a main folder named `music-vote-app` with 4 sub-folders (ultima-infrastructure, ultima-backend, ultima-backoffice, ultima-judge-frontend).
+3. Right-click on the sub-folder named `music-infrastructure`, among the displayed options select "_Open in terminal_".
 
 ```
 NB: Before we continue it is vital for us to know the use and content of the scripts we are going run. All of them are found in the `ultima-infrastructure` folder.
